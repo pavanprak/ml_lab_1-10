@@ -1,3 +1,84 @@
+3d
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.outer(np.linspace(-1, 1, 100), np.ones(100))
+y = x.copy().T  
+z = x ** 2 + y ** 2
+
+ax = plt.axes(projection='3d')
+ax.plot_surface(x, y, z)
+------------------------------------------------------------------------------------------------------
+bfs
+class Node:
+    def __init__(self,v,weight):
+        self.v=v
+        self.weight=weight
+class pathNode:
+    def __init__(self,node,parent):
+        self.node=node
+        self.parent=parent
+        
+def addEdge(u,v,weight):
+        adj[u].append(Node(v,weight))
+adj=[]
+def BFS(h,v,src,dest):
+    openlist=[]
+    closelist=[]
+    openlist.append(pathNode(src,None))
+    while(openlist):
+        currentNode=openlist[0]
+        currentIndex=0
+        for i in range(len(openlist)):
+            if (h[openlist[i].node]<h[currentNode.node]):
+                currentNode=openlist[i]
+                currentIndex=i
+        openlist.pop(currentIndex)
+        closelist.append(currentNode)
+        if (currentNode.node==dest):
+            path=[]
+            cur=currentNode
+            while(cur!=None):
+                path.append(cur.node)
+                cur=cur.parent
+            path.reverse()
+            return path
+        for node in adj[currentNode.node]:
+            for x in openlist:
+                if (x.node==node.v):
+                    continue
+            for x in closelist:
+                if (x.node==node.v):
+                    continue
+            openlist.append(pathNode(node.v,currentNode))
+    return openlist
+v=10
+adj=[]
+for i in range(v):
+    adj.append([])   
+addEdge(0,1,2)
+addEdge(0,2,1)
+addEdge(0,3,10)
+addEdge(1,4,3)
+addEdge(1,5,2)
+addEdge(2,6,9)
+addEdge(3,7,5)
+addEdge(3,8,2)
+addEdge(7,9,5)
+h=[20,22,21,10,25,24,30,5,12,0]
+path=BFS(h,v,0,9)
+for i in range(len(path)-1):
+    print(path[i], end="->")
+print(path[len(path)-1])
+=============================================================================================================
+contour
+import matplotlib.pyplot as plt
+import numpy as np
+
+Z = np.cos(2*X) * np.sin(2*Y)
+fig, ax = plt.subplots(figsize=(8, 6))
+contour = ax.contour(X, Y, Z, levels=15, cmap='coolwarm')
+--------------------------------------------------------------------------------------------
 a*
 class Graph:
      def __init__(self, adjacency_list):
@@ -61,68 +142,16 @@ adjacency_list = {
 graph1 = Graph(adjacency_list)
 graph1.a_star_algorithm('A', 'D')
 ===========================================================================================================
-bfs
-class Node:
-    def __init__(self,v,weight):
-        self.v=v
-        self.weight=weight
-class pathNode:
-    def __init__(self,node,parent):
-        self.node=node
-        self.parent=parent
-        
-def addEdge(u,v,weight):
-        adj[u].append(Node(v,weight))
-adj=[]
-def BFS(h,v,src,dest):
-    openlist=[]
-    closelist=[]
-    openlist.append(pathNode(src,None))
-    while(openlist):
-        currentNode=openlist[0]
-        currentIndex=0
-        for i in range(len(openlist)):
-            if (h[openlist[i].node]<h[currentNode.node]):
-                currentNode=openlist[i]
-                currentIndex=i
-        openlist.pop(currentIndex)
-        closelist.append(currentNode)
-        if (currentNode.node==dest):
-            path=[]
-            cur=currentNode
-            while(cur!=None):
-                path.append(cur.node)
-                cur=cur.parent
-            path.reverse()
-            return path
-        for node in adj[currentNode.node]:
-            for x in openlist:
-                if (x.node==node.v):
-                    continue
-            for x in closelist:
-                if (x.node==node.v):
-                    continue
-            openlist.append(pathNode(node.v,currentNode))
-    return openlist
-v=10
-adj=[]
-for i in range(v):
-    adj.append([])   
-addEdge(0,1,2)
-addEdge(0,2,1)
-addEdge(0,3,10)
-addEdge(1,4,3)
-addEdge(1,5,2)
-addEdge(2,6,9)
-addEdge(3,7,5)
-addEdge(3,8,2)
-addEdge(7,9,5)
-h=[20,22,21,10,25,24,30,5,12,0]
-path=BFS(h,v,0,9)
-for i in range(len(path)-1):
-    print(path[i], end="->")
-print(path[len(path)-1])
-=============================================================================================================
+heatmap
+import numpy as np
+import seaborn as sn
+
+data = np.random.randint(low = 1,
+                         high = 100,
+                         size = (10, 10))
+ 
+hm = sn.heatmap(data = data)
+---------------------------------------------------------------------------------------------------------
 #minmax
 class tree:
     def __init__(self, value, children=[]):
@@ -175,6 +204,17 @@ optimal_path = minmax(game_tree, 2, True)
 print("optimal value =", optimal_value)
 print("optimal path=", optimal_path)
 ===================================================================================================
+boxplot
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+feature_names = iris.feature_names
+
+sns.boxplot(data=data)
+plt.xticks(ticks=range(len(feature_names)), labels=feature_names)
+------------------------------------------------------------------------------------------------
 alpha-beta
 class Node:
     def __init__(self, value):
@@ -315,23 +355,16 @@ def calculate_likelihood_gaussian(df, feat_name, feat_val, Y, label):
     return p_x_given_y
 
 def naive_bayes_gaussian(df, X, Y):
-    # get feature names
     features = list(df.columns)[:-1]
-
-    # calculate prior
     prior = calculate_prior(df, Y)
-
     Y_pred = []
-    # loop over every data sample
     for x in X:
-        # calculate likelihood
         labels = sorted(list(df[Y].unique()))
         likelihood = [1]*len(labels)
         for j in range(len(labels)):
             for i in range(len(features)):
                 likelihood[j] *= calculate_likelihood_gaussian(df, features[i], x[i], Y, labels[j])
 
-        # calculate posterior probability (numerator only)
         post_prob = [1]*len(labels)
         for j in range(len(labels)):
             post_prob[j] = likelihood[j] * prior[j]
@@ -447,37 +480,22 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 
 def kmeans(X, K, max_iters=100):
-    # Use the first K data points as the initial centroids
     centroids = X[:K]
-
     for _ in range(max_iters):
-        # Assign each data point to the nearest centroid
         labels = np.argmin(np.linalg.norm(X[:, np.newaxis] - centroids, axis=2), axis=1)
-
-        # Update the centroids based on the assigned points
         new_centroids = np.array([X[labels == k].mean(axis=0) for k in range(K)])
-
-        # If the centroids did not change, stop iterating
         if np.all(centroids == new_centroids):
             break
-
         centroids = new_centroids
-
     return labels, centroids
 
-# Load the Iris dataset
 iris = load_iris()
 X = iris.data
-
-# Perform K-means clustering
 K = 3
 labels, centroids = kmeans(X, K)
-
-# Print the resulting labels and centroids
 print("Labels:", labels)
 print("Centroids:", centroids)
 
-# Plot the clusters
 plt.scatter(X[:, 0], X[:, 1], c=labels)
 plt.scatter(centroids[:, 0], centroids[:, 1], marker='x', color='red', s=200)
 plt.xlabel('Sepal Length')
@@ -507,6 +525,21 @@ def single_linkage(data):
    
     return proximity_matrix
 
+# Calculate the proximity matrix using single-linkage
+single_linkage_matrix = single_linkage(data)
+print("Single-linkage proximity matrix:")
+print(single_linkage_matrix)
+
+# Plot the dendrogram using single-linkage
+linkage_matrix = linkage(data, method='single')
+plt.figure(figsize=(10, 5))
+dendrogram(linkage_matrix)
+plt.title('Dendrogram - Single Linkage')
+plt.xlabel('Data Points')
+plt.ylabel('Distance')
+plt.show()
+------------------------------------------------------------------------------------
+
 # Function to calculate the proximity matrix based on complete-linkage
 def complete_linkage(data):
     n = data.shape[0]
@@ -519,24 +552,12 @@ def complete_linkage(data):
    
     return proximity_matrix
 
-# Calculate the proximity matrix using single-linkage
-single_linkage_matrix = single_linkage(data)
-print("Single-linkage proximity matrix:")
-print(single_linkage_matrix)
-
 # Calculate the proximity matrix using complete-linkage
 complete_linkage_matrix = complete_linkage(data)
 print("\nComplete-linkage proximity matrix:")
 print(complete_linkage_matrix)
 
-# Plot the dendrogram using single-linkage
-linkage_matrix = linkage(data, method='single')
-plt.figure(figsize=(10, 5))
-dendrogram(linkage_matrix)
-plt.title('Dendrogram - Single Linkage')
-plt.xlabel('Data Points')
-plt.ylabel('Distance')
-plt.show()
+
 
 # Plot the dendrogram using complete-linkage
 linkage_matrix = linkage(data, method='complete')
@@ -549,10 +570,7 @@ plt.show()
 ======================================================================================================================================
 PCA
 import numpy as np
-
-
 class PCA:
-
     def __init__(self, n_components):
         self.n_components = n_components
         self.components = None
@@ -562,17 +580,9 @@ class PCA:
         # mean centering
         self.mean = np.mean(X, axis=0)
         X = X -  self.mean
-
-        # covariance, functions needs samples as columns
         cov = np.cov(X.T)
-
-        # eigenvectors, eigenvalues
         eigenvectors, eigenvalues = np.linalg.eig(cov)
-
-        # eigenvectors v = [:, i] column vector, transpose this for easier calculations
         eigenvectors = eigenvectors.T
-
-        # sort eigenvectors
         idxs = np.argsort(eigenvalues)[::-1]
         eigenvalues = eigenvalues[idxs]
         eigenvectors = eigenvectors[idxs]
@@ -587,16 +597,13 @@ class PCA:
 
 # Testing
 if __name__ == "__main__":
-    # Imports
     import matplotlib.pyplot as plt
     from sklearn import datasets
 
-    # data = datasets.load_digits()
     data = datasets.load_iris()
     X = data.data
     y = data.target
 
-    # Project the data onto the 2 primary principal components
     pca = PCA(2)
     pca.fit(X)
     X_projected = pca.transform(X)
@@ -665,4 +672,4 @@ LDA_object = LDA(n_components=2)
 X_train_modified = LDA_object.transform(X_train, Y_train)
 
 print("Original Data Size:",X_train.shape, "\nModified Data Size:", X_train_modified.shape)
-
+======================================================================================================================================
